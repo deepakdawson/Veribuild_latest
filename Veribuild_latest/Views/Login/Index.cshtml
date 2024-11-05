@@ -1,0 +1,91 @@
+﻿@model IBaseModel
+@{
+    ViewData[Utils.Title_Key] = "Login";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="login-img">
+                <img src="~/home/img/hero-image.png" width="735" height="604" alt="Login" class="img-fluid">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="login-content">
+                <h3>Login to your account</h3>
+                <ul class="nav nav-pills" id="pills-tab">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pills-otp-tab" data-bs-toggle="pill" data-bs-target="#pills-otp" type="button" role="tab" aria-selected="true">Login with OTP</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-password-tab" data-bs-toggle="pill" data-bs-target="#pills-password" type="button" role="tab" aria-selected="false">Login with password</button>
+                    </li>
+                </ul>
+                <div class="error-msg-bottom d-none">
+                    <strong></strong> No account found. Please try again with correct email address.
+                </div>
+                <div class="create-account">
+                    <h5>New User?</h5>
+                    <a class="link-text" href="https://veribuild.com.au/">Create an account</a>
+                </div>
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-otp" role="tabpanel" tabindex="0">
+                        <form>
+                            <div class="form-group">
+                                <label class="form-label required">Phone number</label>
+                                <input id="mobile1" type="tel" name="mobile" class="form-control number-field" required maxlength="11"/>
+                            </div>
+                            <div class="form-group" style="display:none">
+                                <label class="form-label required">Email</label>
+                                <input id="" type="email" name="mobile" class="form-control" placeholder="Email" required>
+                            </div>
+                            <div class="cta-box">
+                                <button class="btn btn-primary" type="button">Get OTP</button>
+                            </div>
+                        </form>
+                        <div class="other-link" id="updateOTP">
+                            <h6>Login with <label>Email</label></h6>
+                            <span><i class="fas fa-chevron-circle-down"></i></span>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="pills-password" role="tabpanel" tabindex="0">
+                        <form>
+                            <div class="form-group">
+                                <label class="form-label required">Phone number</label>
+                                <input id="mobile2" type="tel" name="mobile" class="form-control number-field" required maxlength="11"/>
+                                <span id="user_phone_err_msg" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required">Password</label>
+                                <input type="password" class="form-control" id="userpassword_phone" required data-role="password-validation" />
+                                <span class="input-icon"><img src="~/home/img/icons/eye-icon.svg" alt="icon"></span>
+                                <span id="password_phone_err_msg" class="text-danger" role="alert"></span>
+                            </div>
+                            <div class="form-group" style="display:none">
+                                <label class="form-label required">Enter Email</label>
+                                <input type="email" class="form-control" id="useremail_pass" placeholder="Email" required data-role="email-validation" />
+                                <span id="email_error_msg" class="text-danger" role="alert"></span>
+                            </div>
+                            <div class="form-group" style="display:none;">
+                                <label class="form-label required">Password</label>
+                                <input type="password" class="form-control" id="userpassword_pass" required data-role="password-validation" />
+                                <span class="input-icon"><img src="~/home/img/icons/eye-icon.svg" alt="icon"></span>
+                                <span id="password_err_msg" class="text-danger" role="alert"></span>
+                            </div>
+                            <div class="cta-box">
+                                <button class="btn btn-primary" type="button" id="btn_signinwithpassword">Sign in</button>
+                            </div>
+                        </form>
+                        <div class="other-link" id="updateEmail">
+                            <h6>Login with <label>Email</label></h6>
+                            <span><i class="fas fa-chevron-circle-down"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{ 
+    <script src="~/js/auth/manage-signin.js" type="module"></script>
+}

@@ -1,0 +1,11 @@
+﻿@{
+    string? controllerName = Context.Request.RouteValues["controller"]?.ToString();
+    if (controllerName?.ToLower() == "login")
+    {
+        Layout = "_Layout";
+    }
+    else
+    {
+        Layout = "_AdminLayout";
+    }
+}
