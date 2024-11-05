@@ -21,6 +21,8 @@ function initMap() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
+                currentlat = position.coords.latitude;
+                currentlng = position.coords.longitude;
                 const pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude,
@@ -34,9 +36,15 @@ function initMap() {
     //const infowindow = new google.maps.InfoWindow();
     //const infowindowContent = document.getElementById("infowindow-content");
     //infowindow.setContent(infowindowContent);
+    //const marker = new google.maps.marker.AdvancedMarkerElement({
+    //    map,
+    //    position: { lat: currentlat, lng: currentlng },
+    //    title: 'Uluru',
+    //});
+
     const marker = new google.maps.Marker({
         map,
-        anchorPoint: new google.maps.Point(0, -29),
+        anchorPoint: new google.maps.Point(currentlat, currentlng),
     });
 
     autocomplete.addListener("place_changed", () => {
@@ -67,12 +75,12 @@ function initMap() {
         //        }
         //    }
         //})
-        //if (place.geometry.viewport) {
-        //    map.fitBounds(place.geometry.viewport);
-        //} else {
-        //    map.setCenter(place.geometry.location);
-        //    map.setZoom(17);
-        //}
+        if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+        } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);
+        }
         marker.setPosition(place.geometry.location);
         marker.setVisible(true);
         //infowindowContent.children["place-name"].textContent = place.name;
@@ -83,6 +91,23 @@ function initMap() {
 }
 
 function mapUi() {
+    document.querySelector('#featureimageopener').addEventListener('click', function (e) {
+        e.preventDefault();
+        this.nextElementSibling?.click();
+    });
+    document.querySelector('#featureimage').addEventListener('change', function () {
+        if (this.files.length > 0) {
+            const ref = this;
+            let fr = new FileReader();
+            fr.onload = (e) => {
+                console.log(e.target.result);
+                ref.parentElement.querySelector('img').src = e.target.result;
+            };
+            fr.readAsDataURL(this.files[0]);
+        }
+    })
+
+
     document.querySelector('#btn-saveproperty').addEventListener('click', function () {
 
     });

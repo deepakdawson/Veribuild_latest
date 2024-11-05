@@ -40,6 +40,7 @@
                                 <label class="lbl-text">Types</label>
                                 <div class="form-group">
                                     <select class="form-select" id="propertyTypes">
+                                        <option value="0">Select Property Type</option>
                                         @foreach (PropertyType propertyType in Model.PropertyTypes)
                                         {
                                             <option value="@propertyType.Id">@(propertyType.Name)</option>
@@ -73,9 +74,9 @@
                                 <h6>Feature image</h6>
                                 <div class="form-group">
                                     <div class="main-image">
-                                        <label class="w-100" for="img1">
-                                            <img src="/images/placeholder-img.svg" class="img-fluid" />
-                                            <input class="drop-image" type="file" name='' id="img1">
+                                        <label class="w-100" for="featureimage">
+                                            <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" id="featureimageopener" />
+                                            <input class="drop-image" type="file" name='featureimage' id="featureimage" accept="image/jpeg, image/png, image/jpg">
                                         </label>
                                     </div>
                                 </div>
