@@ -4,5 +4,6 @@
     {
         public const string GalleryImage = "GalleryImage";
         public const string FeaturedImage = "FeaturedImage";
+        public const string FloorPlanFiles = "FloorPlanFiles";
     }
 }

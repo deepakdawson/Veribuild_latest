@@ -3,295 +3,284 @@
     ViewData[Utils.Title_Key] = "Add Property";
 }
 
-<div class="container">
-    <partial name="~/Views/Shared/Common/_Navbar.cshtml" />
+<section class="tab-section">
+    <div class="container">
+        <partial name="~/Views/Shared/Common/_Navbar.cshtml" />
 
-    <div class="tab-content" id="pills-tabContent">
-        <div class="addPropertyWrap tab-pane fade show active" id="pills-link1" tabindex="0">
-            <form>
-                <div class="text-block">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <figure class="form-row">
-                                <label class="lbl-text">Address</label>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Enter property address here" id="propertyaddress"/>
-                                </div>
-                            </figure>
-                        </div>
-                        <div class="col-md-2">
-                            <figure class="form-row">
-                                <label class="lbl-text">Unit</label>
-                                <div class="form-group">
-                                    <input type="text" class="form-control number-field" id="propertyunit" placeholder="" value="1"/>
-                                </div>
-                            </figure>
-                        </div>
-                        <div class="col-md-2">
-                            <figure class="form-row">
-                                <label class="lbl-text">Area</label>
-                                <div class="form-group">
-                                    <input type="text" class="form-control number-field" id="propertyarea" placeholder="" />
-                                </div>
-                            </figure>
-                        </div>
-                        <div class="col-md-2">
-                            <figure class="form-row">
-                                <label class="lbl-text">Types</label>
-                                <div class="form-group">
-                                    <select class="form-select" id="propertyTypes">
-                                        <option value="0">Select Property Type</option>
-                                        @foreach (PropertyType propertyType in Model.PropertyTypes)
-                                        {
-                                            <option value="@propertyType.Id">@(propertyType.Name)</option>
-                                        }
-                                    </select>
-                                </div>
-                            </figure>
-                        </div>
-                        <div class="col-md-2">
-                            <figure class="form-row">
-                                <label class="lbl-text">Bedrooms</label>
-                                <div class="form-group">
-                                    <input type="text" class="form-control number-field" id="propertyrooms" placeholder="" />
-                                </div>
-                            </figure>
-                        </div>
-                        <div class="col-md-2">
-                            <figure class="form-row">
-                                <label class="lbl-text me-4">Easy Number</label>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" id="propertyeasynumber" placeholder="" readonly value="1" />
-                                </div>
-                            </figure>
-                        </div>
-                    </div>
-                </div>
-                <div class="media-block">
-                    <div class="row">
-                        <div class="col-md-7">
-                            <figure>
-                                <h6>Feature image</h6>
-                                <div class="form-group">
-                                    <div class="main-image">
-                                        <label class="w-100" for="featureimage">
-                                            <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" id="featureimageopener" />
-                                            <input class="drop-image" type="file" name='featureimage' id="featureimage" accept="image/jpeg, image/png, image/jpg">
-                                        </label>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="addPropertyWrap tab-pane fade show active" id="pills-link1" tabindex="0">
+                <form>
+                    <div class="text-block">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <figure class="form-row">
+                                    <label class="lbl-text">Address</label>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Enter property address here" id="propertyaddress" />
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="other-image">
-                                        <div class="image-box">
-                                            <label class="w-100" for="img2">
-                                                <img src="/images/placeholder-img.svg" class="img-fluid" />
-                                                <input class="drop-image" type="file" name='' id="img2">
-                                            </label>
-                                        </div>
-                                        <div class="image-box">
-                                            <label class="w-100" for="img3">
-                                                <img src="/images/placeholder-img.svg" class="img-fluid" />
-                                                <input class="drop-image" type="file" name='' id="img3">
-                                            </label>
-                                        </div>
-                                        <div class="image-box">
-                                            <label class="w-100" for="img4">
-                                                <img src="/images/placeholder-img.svg" class="img-fluid" />
-                                                <input class="drop-image" type="file" name='' id="img4">
-                                            </label>
-                                        </div>
-                                        <div class="image-box">
-                                            <label class="w-100" for="img5">
-                                                <img src="/images/placeholder-img.svg" class="img-fluid" />
-                                                <input class="drop-image" type="file" name='' id="img5">
-                                            </label>
-                                        </div>
-                                        <div class="image-box">
-                                            <label class="w-100" for="img6">
-                                                <img src="/images/placeholder-img.svg" class="img-fluid" />
-                                                <input class="drop-image" type="file" name='' id="img6">
-                                            </label>
-                                        </div>
-                                        <div class="image-box">
-                                            <label class="w-100" for="img7">
-                                                <img src="/images/placeholder-img.svg" class="img-fluid" />
-                                                <input class="drop-image" type="file" name='' id="img7">
-                                            </label>
-                                        </div>
-                                        <div class="image-box">
-                                            <label class="w-100" for="img8">
-                                                <img src="/images/placeholder-img.svg" class="img-fluid" />
-                                                <input class="drop-image" type="file" name='' id="img8">
-                                            </label>
-                                        </div>
-                                        <div class="image-box">
-                                            <label class="w-100" for="img9">
-                                                <img src="/images/placeholder-img.svg" class="img-fluid" />
-                                                <input class="drop-image" type="file" name='' id="img9">
-                                            </label>
-                                        </div>
-                                        <div class="image-box">
-                                            <label class="w-100" for="img10">
-                                                <img src="/images/placeholder-img.svg" class="img-fluid" />
-                                                <input class="drop-image" type="file" name='' id="img10">
-                                            </label>
-                                        </div>
-                                        <div class="image-box">
-                                            <label class="w-100" for="img11">
-                                                <img src="/images/placeholder-img.svg" class="img-fluid" />
-                                                <input class="drop-image" type="file" name='' id="img11">
-                                            </label>
-                                        </div>
-                                        <div class="image-box">
-                                            <label class="w-100" for="img12">
-                                                <img src="/images/placeholder-img.svg" class="img-fluid" />
-                                                <input class="drop-image" type="file" name='' id="img12">
-                                            </label>
-                                        </div>
-                                        <div class="image-box">
-                                            <label class="w-100" for="img13">
-                                                <img src="/images/placeholder-img.svg" class="img-fluid" />
-                                                <input class="drop-image" type="file" name='' id="img13">
-                                            </label>
-                                        </div>
+                                </figure>
+                            </div>
+                            <div class="col-md-2">
+                                <figure class="form-row">
+                                    <label class="lbl-text">Unit</label>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control number-field" id="propertyunit" placeholder="" value="1" />
                                     </div>
-                                </div>
-                                <div class="cta-box">
-                                    <span class="indicate-upload">Click on the image to make it “featured image”</span>
-                                    <button type="button" class="btn btn-green">
-                                        <i class="fa-solid fa-upload"></i> Upload
-                                        photos
-                                    </button>
-                                </div>
-                            </figure>
-                        </div>
-                        <div class="col-md-5">
-                            <figure>
-                                <h6>Upload Floor Plan (PDF)</h6>
-                                <div class="form-group">
-                                    <div class="other-document">
-                                        <div class="document-box">
-                                            <label class="w-100" for="doc1">
-                                                <canvas class="img-fluid" size="A4" layout="landscape"></canvas>
-                                                <input class="drop-file" type="file" name='' id="doc1">
-                                            </label>
-                                        </div>
-                                        <div class="document-box">
-                                            <label class="w-100" for="doc2">
-                                                <canvas class="img-fluid" size="A4" layout="landscape"></canvas>
-                                                <input class="drop-file" type="file" name='' id="doc2">
-                                            </label>
-                                        </div>
-                                        <div class="document-box">
-                                            <label class="w-100" for="doc3">
-                                                <canvas class="img-fluid" size="A4" layout="landscape"></canvas>
-                                                <input class="drop-file" type="file" name='' id="doc3">
-                                            </label>
-                                        </div>
-                                        <div class="document-box">
-                                            <label class="w-100" for="doc4">
-                                                <canvas class="img-fluid" size="A4" layout="landscape"></canvas>
-                                                <input class="drop-file" type="file" name='' id="doc4">
-                                            </label>
-                                        </div>
-                                        <div class="document-box">
-                                            <label class="w-100" for="doc5">
-                                                <canvas class="img-fluid" size="A4" layout="landscape"></canvas>
-                                                <input class="drop-file" type="file" name='' id="doc5">
-                                            </label>
-                                        </div>
-                                        <div class="document-box">
-                                            <label class="w-100" for="doc6">
-                                                <canvas class="img-fluid" size="A4" layout="landscape"></canvas>
-                                                <input class="drop-file" type="file" name='' id="doc6">
-                                            </label>
-                                        </div>
-                                        <div class="document-box">
-                                            <label class="w-100" for="doc7">
-                                                <canvas class="img-fluid" size="A4" layout="landscape"></canvas>
-                                                <input class="drop-file" type="file" name='' id="doc7">
-                                            </label>
-                                        </div>
-                                        <div class="document-box">
-                                            <label class="w-100" for="doc8">
-                                                <canvas class="img-fluid" size="A4" layout="landscape"></canvas>
-                                                <input class="drop-file" type="file" name='' id="doc8">
-                                            </label>
-                                        </div>
-                                        <div class="document-box">
-                                            <label class="w-100" for="doc9">
-                                                <canvas class="img-fluid" size="A4" layout="landscape"></canvas>
-                                                <input class="drop-file" type="file" name='' id="doc9">
-                                            </label>
-                                        </div>
+                                </figure>
+                            </div>
+                            <div class="col-md-2">
+                                <figure class="form-row">
+                                    <label class="lbl-text">Area</label>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control number-field" id="propertyarea" placeholder="" />
                                     </div>
-                                </div>
-                                <div class="cta-box">
-                                    <button type="button" class="btn btn-green"  ><i class="fa-solid fa-upload"></i>Upload PDF</button>
-                                </div>
-                            </figure>
-                            <figure>
-                                <h6>Upload Videos</h6>
-                                <div class="form-group">
-                                    <label class="lbl-text">Vimeo Url:</label>
-                                    <div id="vimeoBoxURL">
-                                        <input type="text" class="form-control" placeholder="Enter vimeo URL" />
+                                </figure>
+                            </div>
+                            <div class="col-md-2">
+                                <figure class="form-row">
+                                    <label class="lbl-text">Types</label>
+                                    <div class="form-group">
+                                        <select class="form-select" id="propertyTypes">
+                                            <option value="0">Select Property Type</option>
+                                            @foreach (PropertyType propertyType in Model.PropertyTypes)
+                                            {
+                                                <option value="@propertyType.Id">@(propertyType.Name)</option>
+                                            }
+                                        </select>
                                     </div>
-                                    <div class="text-end" onclick="dynamicUrl('vimeoBoxURL')">
-                                        <span class="add-more-btn">
-                                            <i class="fa-solid fa-square-plus"></i> Add more
-                                        </span>
+                                </figure>
+                            </div>
+                            <div class="col-md-2">
+                                <figure class="form-row">
+                                    <label class="lbl-text">Bedrooms</label>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control number-field" id="propertyrooms" placeholder="" />
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="lbl-text">Youtube Url:</label>
-                                    <div id="youtubeBoxURL">
-                                        <input type="text" class="form-control" placeholder="Enter youtube URL" />
+                                </figure>
+                            </div>
+                            <div class="col-md-2">
+                                <figure class="form-row">
+                                    <label class="lbl-text me-4">Easy Number</label>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="propertyeasynumber" placeholder="" readonly value="1" />
                                     </div>
-                                    <div class="text-end" onclick="dynamicUrl('youtubeBoxURL')">
-                                        <span class="add-more-btn">
-                                            <i class="fa-solid fa-square-plus"></i> Add more
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="lbl-text">Upload from computer</label>
-                                    <div class="custom-file-upload">
-                                        <label for="viodeUpload" class="form-control"></label>
-                                        <input type="file" id="viodeUpload" accept=".mp4" class="hidden">
-                                    </div>
-                                </div>
-                            </figure>
-                            <figure>
-                                <h6>Preview</h6>
-                                <div class="video-wrap">
-                                    <div class="video-box">
-                                        <img src="/images/placeholder-media.svg" class="img-fluid" />
-                                    </div>
-                                    <div class="video-box">
-                                        <img src="/images/placeholder-media.svg" class="img-fluid" />
-                                    </div>
-                                    <div class="video-box">
-                                        <img src="/images/placeholder-media.svg" class="img-fluid" />
-                                    </div>
-                                </div>
-                            </figure>
+                                </figure>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="map-block">
-                    <h6>Map</h6>
-                    <div id="map" style="height:500px"></div>
-                </div>
-                <div class="cta-box">
-                    <button type="button" class="btn btn-green" id="btn-saveproperty">Save property</button>
-                </div>
-            </form>
+                    <div class="media-block">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <figure>
+                                    <h6>Feature image</h6>
+                                    <div class="form-group">
+                                        <div class="main-image">
+                                            <label class="w-100" for="featureimage">
+                                                <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" id="featureimageopener" />
+                                                <input class="drop-image" type="file" name='featureimage' id="featureimage" accept="image/jpeg, image/png, image/jpg">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="other-image">
+                                            <input class="drop-image" id="otherimageselector" hidden type="file" multiple accept="image/png, image/jpeg, image/jpg">
+                                            <div id="otherimagescontainer" class="other-image">
+                                                <div class="image-box">
+                                                    <label class="w-100" for="img2">
+                                                        <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" data-role="other-image" />
+                                                    </label>
+                                                </div>
+                                                <div class="image-box">
+                                                    <label class="w-100" for="img3">
+                                                        <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" data-role="other-image" />
+                                                    </label>
+                                                </div>
+                                                <div class="image-box">
+                                                    <label class="w-100" for="img4">
+                                                        <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" data-role="other-image" />
+                                                    </label>
+                                                </div>
+                                                <div class="image-box">
+                                                    <label class="w-100" for="img5">
+                                                        <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" data-role="other-image" />
+                                                    </label>
+                                                </div>
+                                                <div class="image-box">
+                                                    <label class="w-100" for="img6">
+                                                        <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" data-role="other-image" />
+                                                    </label>
+                                                </div>
+                                                <div class="image-box">
+                                                    <label class="w-100" for="img7">
+                                                        <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" data-role="other-image" />
+                                                    </label>
+                                                </div>
+                                                <div class="image-box">
+                                                    <label class="w-100" for="img8">
+                                                        <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" data-role="other-image" />
+                                                    </label>
+                                                </div>
+                                                <div class="image-box">
+                                                    <label class="w-100" for="img9">
+                                                        <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" data-role="other-image" />
+                                                    </label>
+                                                </div>
+                                                <div class="image-box">
+                                                    <label class="w-100" for="img10">
+                                                        <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" data-role="other-image" />
+                                                    </label>
+                                                </div>
+                                                <div class="image-box">
+                                                    <label class="w-100" for="img11">
+                                                        <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" data-role="other-image" />
+                                                    </label>
+                                                </div>
+                                                <div class="image-box">
+                                                    <label class="w-100" for="img12">
+                                                        <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" data-role="other-image" />
+                                                    </label>
+                                                </div>
+                                                <div class="image-box">
+                                                    <label class="w-100" for="img13">
+                                                        <img src="/images/placeholder-img.svg" class="img-fluid cursor-point" data-role="other-image" />
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cta-box">
+                                        <span class="indicate-upload">Click on the image to make it “featured image”</span>
+                                        <button type="button" class="btn btn-green" id="btnUploadphotos">
+                                            <i class="fa-solid fa-upload"></i> Upload Photos
+                                        </button>
+                                    </div>
+                                </figure>
+                            </div>
+                            <div class="col-md-5">
+                                <figure>
+                                    <h6>Upload Floor Plan (PDF)</h6>
+                                    <div class="form-group">
+                                        <input type="file" name="" id="floorplanpdfselector" hidden accept="application/pdf" multiple>
+                                        <div class="other-document" id="floorplanpdfcontainer">
+                                            <div class="document-box">
+                                                <label class="w-100" for="doc1">
+                                                    <img class="img-fluid cursor-point" src="~/images/placeholder-file.svg" data-role="pdf-select" />
+                                                </label>
+                                            </div>
+                                            <div class="document-box">
+                                                <label class="w-100" for="doc2">
+                                                    <img class="img-fluid cursor-point" src="~/images/placeholder-file.svg" data-role="pdf-select" />
+                                                </label>
+                                            </div>
+                                            <div class="document-box">
+                                                <label class="w-100" for="doc3">
+                                                    <img class="img-fluid cursor-point" src="~/images/placeholder-file.svg" data-role="pdf-select" />
+                                                </label>
+                                            </div>
+                                            <div class="document-box">
+                                                <label class="w-100" for="doc4">
+                                                    <img class="img-fluid cursor-point" src="~/images/placeholder-file.svg" data-role="pdf-select" />
+                                                </label>
+                                            </div>
+                                            <div class="document-box">
+                                                <label class="w-100" for="doc5">
+                                                    <img class="img-fluid cursor-point" src="~/images/placeholder-file.svg" data-role="pdf-select" />
+                                                </label>
+                                            </div>
+                                            <div class="document-box">
+                                                <label class="w-100" for="doc6">
+                                                    <img class="img-fluid cursor-point" src="~/images/placeholder-file.svg" data-role="pdf-select" />
+                                                </label>
+                                            </div>
+                                            <div class="document-box">
+                                                <label class="w-100" for="doc7">
+                                                    <img class="img-fluid cursor-point" src="~/images/placeholder-file.svg" data-role="pdf-select" />
+                                                </label>
+                                            </div>
+                                            <div class="document-box">
+                                                <label class="w-100" for="doc8">
+                                                    <img class="img-fluid cursor-point" src="~/images/placeholder-file.svg" data-role="pdf-select" />
+                                                </label>
+                                            </div>
+                                            <div class="document-box">
+                                                <label class="w-100" for="doc9">
+                                                    <img class="img-fluid cursor-point" src="~/images/placeholder-file.svg" data-role="pdf-select" />
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cta-box">
+                                        <button type="button" class="btn btn-green" id="btnselectfloorplanpdf"><i class="fa-solid fa-upload"></i>Upload PDF</button>
+                                    </div>
+                                </figure>
+                                <figure>
+                                    <h6>Upload Videos</h6>
+                                    <div class="form-group">
+                                        <label class="lbl-text">Vimeo Url:</label>
+                                        <div id="vimeoBoxURL">
+                                            <input type="text" class="form-control" placeholder="Enter vimeo URL" data-id="input1" onkeydown="backspaceRemove(event)" oninput="previewVideoUrl(this, 'vimeo')" onfocus="inputFocusSelect(this)" />
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="add-more-btn" id="addmorevimeourl">
+                                                <i class="fa-solid fa-square-plus"></i> Add more
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="lbl-text">Youtube Url:</label>
+                                        <div id="youtubeBoxURL">
+                                            <input type="text" class="form-control" placeholder="Enter youtube URL" id="input2" onkeydown="backspaceRemove(event)" oninput="previewVideoUrl(this, 'youtube')" onfocus="inputFocusSelect(this)" />
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="add-more-btn" id="addmoreyoutubeurl">
+                                                <i class="fa-solid fa-square-plus"></i> Add more
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="lbl-text">Upload from computer</label>
+                                        <div class="custom-file-upload">
+                                            <label for="viodeUpload" class="form-control"></label>
+                                            <input type="file" id="viodeUpload" accept=".mp4" class="hidden">
+                                        </div>
+                                    </div>
+                                </figure>
+                                <figure>
+                                    <h6>Preview</h6>
+                                    <div class="video-wrap" id="videothumbcontainer">
+                                        <div class="video-box">
+                                            <img src="/images/placeholder-media.svg" class="img-fluid" />
+                                        </div>
+                                        <div class="video-box">
+                                            <img src="/images/placeholder-media.svg" class="img-fluid" />
+                                        </div>
+                                        <div class="video-box">
+                                            <img src="/images/placeholder-media.svg" class="img-fluid" />
+                                        </div>
+                                    </div>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="map-block">
+                        <h6>Map</h6>
+                        <div id="map" style="height:500px"></div>
+                    </div>
+                    <div class="cta-box">
+                        <button type="button" class="btn btn-green" id="btn-saveproperty">Save property</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+</section>
+
+
 
 @section scripts{
     <script src="https://maps.googleapis.com/maps/api/js?key=@Model.GoogleApiKey&libraries=places&v=weekly"></script>
+    <script src="https://player.vimeo.com/api/player.js" defer async></script>
+    <script src="~/lib/pdfjs/build/pdf.js" type="text/javascript"></script>
+    <script src="~/js/pdf/thumb-gen.js" type="text/javascript"></script>
     <script src="~/js/property/add.js" type="module"></script>
 }

@@ -13,6 +13,7 @@
     static InvalidUrl = 'Url is invalid';
     static PropertyImages = 'Please select property images';
     static PropertyFloorPdf = 'Please select property floor plan file';
+    static FeatureImage = 'Please select property feature image';
     static QrError = 'Please attach a QR code';
     static DocumentError = 'Please select a document';
     static PropertyError = 'Please select a property';

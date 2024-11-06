@@ -11,5 +11,6 @@
         public const string ValidationMessage_PhoneNumber = "Phone Number is required";
         public const string ValidationMessage_CountryCode = "Country code is required";
         public const string PasswordMismatch = "Password and Confirm passowrd did not match.";
+        public const string FeatureImage = "Feature image is required.";
     }
 }

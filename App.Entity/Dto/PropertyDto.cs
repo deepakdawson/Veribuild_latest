@@ -29,17 +29,17 @@ namespace App.Entity.Dto
 
         [Required(ErrorMessage = ValidationMessges.Mandatory)]
         public int Bedroom { get; set; }
+        public int EasyNumber { get; set; }
         public string? YoutubeUrl { get; set; }
         public string? VimeoeUrl { get; set; }
 
-        [Required(ErrorMessage = ValidationMessges.Mandatory)]
-        [ValidateFileSize(Utils.MaxFloorPlanPdfSize)]
-        public IFormFile? FloorPlan { get; set; }
         public IFormFile? Video { get; set; }
+
+        [Required(ErrorMessage = ValidationMessges.FeatureImage)]
+        public IFormFile? MainImage { get; set; }
         public List<IFormFile> ImageFiles { get; set; } = [];
-        public List<IFormFile> FloorPlanImageFiles { get; set; } = [];
+        public List<IFormFile> FloorPdfs { get; set; } = [];
 
         public string UserId { get; set; } = string.Empty;
-        public string? VideoThumbnail { get; set; }
     }
 }

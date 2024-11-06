@@ -1,0 +1,26 @@
+﻿<div class="sidebar-wrapper">
+    <button id="menu-toggle" class="btn btn-link">
+        <i id="toggleIcon" class="fa-solid fa-bars"></i>
+    </button>
+    <ul class="sidebar-nav">
+        <li class="nav-item">
+            <a href="#" class="nav-link">Organisation Settings</a>
+            <ul class="nav-treeview">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">Membership & Billing</a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item menu-open">
+            <a href="#" class="nav-link @(ViewData[Utils.SidebarActiveMenu_Key]?.ToString() == "manageprofile" ? "active" : "" )">Manage Your Profile</a>
+            <ul class="nav-treeview">
+                <li class="nav-item">
+                    <a href="/" class="nav-link  @(ViewData[Utils.SidebarActiveSubMenu_Key]?.ToString() == "updateprofile" ? "active" : "" )">Update My Details</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link  @(ViewData[Utils.SidebarActiveSubMenu_Key]?.ToString() == "viewprofile" ? "active" : "")">View Account Details</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>

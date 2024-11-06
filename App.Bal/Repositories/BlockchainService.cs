@@ -180,5 +180,30 @@ namespace App.Bal.Repositories
             }
             return null;
         }
+
+        public async Task<BlockchainTriggerResponse?> BlockchainTrigger(string data)
+        {
+            try
+            {
+                using HttpClient client = _httpClientFactory.CreateClient();
+                string rawData = _config.ApiKey + data + _config.SecretKey;
+                string payload = Crypto.ComputeSha256Hash(rawData);
+                client.DefaultRequestHeaders.Add("apikey", _config.ApiKey);
+                client.DefaultRequestHeaders.Add("payload", payload);
+                JsonContent jsonContent = JsonContent.Create(new { blockchaindata = data });
+                HttpResponseMessage httpResponse = await client.PostAsync(BlockchainConfig.BlockchainTriggerUrl, jsonContent);
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    string res = await httpResponse.Content.ReadAsStringAsync();
+                    BlockchainTriggerResponse? result = JsonConvert.DeserializeObject<BlockchainTriggerResponse>(res);
+                    return result;
+                }
+            }
+            catch (Exception e)
+            {
+                LoggerHelper.LogError(e);
+            }
+            return null;
+        }
     }
 }

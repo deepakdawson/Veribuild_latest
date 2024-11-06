@@ -324,7 +324,7 @@ namespace App.Dal.Migrations
                     b.Property<int>("EasyNumber")
                         .HasColumnType("int");
 
-                    b.Property<string>("FloorPlanUrl")
+                    b.Property<string>("FeatureImageUrl")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -556,6 +556,10 @@ namespace App.Dal.Migrations
 
                     b.Property<int?>("EventId")
                         .HasColumnType("int");
+
+                    b.Property<string>("EventType")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Guid")
                         .HasColumnType("nvarchar(max)");

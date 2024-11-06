@@ -22,6 +22,9 @@ namespace App.Entity.Models.Property
         [ForeignKey(nameof(EventId))]
         public virtual EventType? Event { get; set; }
 
+        [StringLength(450)]
+        public string? EventType { get; set; }
+
         public string? EventDescription { get; set; }
         public long? ContractId { get; set; }
 

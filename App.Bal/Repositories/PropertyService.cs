@@ -11,10 +11,12 @@ using App.Entity.Models.Property;
 using App.Foundation.Common;
 using App.Foundation.Enumeration;
 using App.Foundation.Messages;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using NetTopologySuite.Index.HPRtree;
 using Newtonsoft.Json;
 
 namespace App.Bal.Repositories
@@ -49,104 +51,213 @@ namespace App.Bal.Repositories
         #region Manage Property
         public async Task<AppResult> AddProperty(PropertyDto propertyDto)
         {
-            List<PropertyImage> propertyImages = [];
+            List<PropertyFile> propertyFiles = [];
+            
             PropertyType? propertyType = await _dbContext.PropertyTypes.FindAsync(propertyDto.PropertyTypeId);
-            // upload floor plan pdf
-            string fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(propertyDto.FloorPlan?.FileName); 
-            BlobResult blobResult = await _storageService.UploadFile(propertyDto.FloorPlan!, fileName, _config.FloorPlanDoc);
-            if (string.IsNullOrEmpty(blobResult.Uri))
-            {
-                LoggerHelper.LogError(new Exception(ErrorMessages.BlobUploadError));
-                return new AppResult() { Success = false, Message = ErrorMessages.Error500 };
-            }
             string metaData = $"Address: {propertyDto.Address}||Lat: {propertyDto.Lattitude}||Long: {propertyDto.Longitude}||Area: {propertyDto.Area}M2||Type: {propertyType?.Name}||Bedroom: {propertyDto.Bedroom}";
 
-            QrApiResult? qrApiResult = await _blockchainService.GenerateQrCode();
-            if (qrApiResult == null || qrApiResult.ReturnCode != "1")
+            BlockchainTriggerResponse? blockchainTriggerResponse = await _blockchainService.BlockchainTrigger(metaData);
+            if (blockchainTriggerResponse != null && blockchainTriggerResponse.ReturnCode == "1")
             {
-                LoggerHelper.LogError(new Exception(ErrorMessages.QrCodeError));
-                return new AppResult() { Success = false, Message = ErrorMessages.Error500 };
-            }
-            PdfSubmitApiResult? pdfSubmit = await _blockchainService.SubmitPdfToBlockchain(blobResult.Uri, qrApiResult.UniqueId!, metaData);
-            if (pdfSubmit is null || pdfSubmit.ReturnCode != "1")
-            {
-                LoggerHelper.LogError(new Exception(pdfSubmit?.Message));
-                return new AppResult() { Success = false, Message = ErrorMessages.Error500 };
-            }
-            await Task.Delay(3000);
-            BlockchainStatus? status = await _blockchainService.BlockchainStatus(qrApiResult.UniqueId, BlockchainStatusParam.UniqueId);
-            while (status?.ReturnCode != "1")
-            {
-                await Task.Delay(3000);
-                status = await _blockchainService.BlockchainStatus(qrApiResult.UniqueId, BlockchainStatusParam.UniqueId);
+                string featureImageFileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(propertyDto.MainImage?.FileName);
+                BlobResult featureImageBlobResult = await _storageService.UploadFile(file: propertyDto.MainImage!, fileName: featureImageFileName, folderName: _config.GalleryImages);
+                if (string.IsNullOrEmpty(featureImageBlobResult.Uri))
+                {
+                    LoggerHelper.LogError(new Exception(ErrorMessages.BlobUploadError));
+                    return new AppResult() { Success = false, Message = ErrorMessages.Error500 };
+                }
+
+                Property property = new()
+                {
+                    UserId = propertyDto.UserId,
+                    Address = propertyDto.Address,
+                    LatLong = new NetTopologySuite.Geometries.Point(propertyDto.Lattitude, propertyDto.Longitude) { SRID = 4326 },
+                    Unit = propertyDto.Unit,
+                    Area = propertyDto.Area,
+                    PropertyTypeId = propertyDto.PropertyTypeId,
+                    Bedroom = propertyDto.Bedroom,
+                    YoutubeUrls = propertyDto.YoutubeUrl,
+                    VimeoUrls = propertyDto.VimeoeUrl,
+                    EasyNumber = propertyDto.EasyNumber,
+                    FeatureImageUrl = featureImageBlobResult.Uri,
+                    Status = true,
+                    QrCode = null,
+                    QrLink = null,
+                    UniqueId = string.Empty,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    BlockchainUrl = null,
+                    ParentBlockchainUrl = null,
+                    TransectionId = null
+                };
+
+                if (propertyDto.Video is not null)
+                {
+                    string videoFileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(propertyDto.Video?.FileName);
+                    BlobResult videoBlobResult = await _storageService.UploadFile(propertyDto.Video!, videoFileName, _config.PropertiesVideos);
+                    property.VideoUrl = videoBlobResult.Uri;
+                }
+
+                await _dbContext.Properties.AddAsync(property);
+                await _dbContext.SaveChangesAsync();
+
+                string fileName = string.Empty;
+
+                foreach (IFormFile formFile in propertyDto.ImageFiles)
+                {
+                    fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(formFile.FileName);
+                    BlobResult blob = await _storageService.UploadFile(formFile, fileName, _config.GalleryImages);
+                    propertyFiles.Add(new PropertyFile()
+                    {
+                        PropertyId = property.Id,
+                        ClientFileName = formFile.Name,
+                        FileUrl = blob.Uri,
+                        BlobName = blob.BlobName,
+                        FileType = PropertyImageType.GalleryImage,
+                        MimeType = formFile.ContentType,
+                    });
+                }
+
+                foreach (IFormFile item in propertyDto.FloorPdfs)
+                {
+                    fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(item.FileName);
+                    BlobResult blob = await _storageService.UploadFile(item, fileName, _config.FloorPlanDoc);
+                    propertyFiles.Add(new PropertyFile()
+                    {
+                        PropertyId = property.Id,
+                        ClientFileName = item.Name,
+                        FileUrl = blob.Uri,
+                        BlobName = blob.BlobName,
+                        FileType = PropertyImageType.FloorPlanFiles,
+                        MimeType = "application/pdf"
+                    });
+                }
+
+                PropertyEvent propertyEvent = new PropertyEvent()
+                {
+                    PropertyId = property.Id,
+                    CreatedBy = propertyDto.UserId,
+                    EventType = EventTypes.NewPropertyAdded,
+                    EventDescription = EventDescriptions.PropertyAdd,
+                    Guid = blockchainTriggerResponse.Guid,
+                    Status = BlockchainTrxStatus.Pending,
+                    CreatedAt = DateTime.Now,
+                };
+
+                await _dbContext.PropertyEvents.AddAsync(propertyEvent);
+                await _dbContext.PropertyFiles.AddRangeAsync(propertyFiles);
+                await _dbContext.SaveChangesAsync();
+
+                return new AppResult() { Success = true, Message = AppMessages.PropertyAddMessage };
             }
 
-            Property property = new()
-            {
-                UserId = propertyDto.UserId,
-                Address = propertyDto.Address,
-                LatLong = new NetTopologySuite.Geometries.Point(propertyDto.Lattitude, propertyDto.Longitude) { SRID = 4326  },
-                Unit = propertyDto.Unit,
-                Area = propertyDto.Area,
-                PropertyTypeId = propertyDto.PropertyTypeId,
-                Bedroom = propertyDto.Bedroom,
-                YoutubeUrls = propertyDto.YoutubeUrl,
-                VimeoUrls = propertyDto.VimeoeUrl,
-                FloorPlanUrl = blobResult.Uri,
-                Status = true,
-                QrCode = qrApiResult.QrImage,
-                QrLink = qrApiResult.QrLink,
-                UniqueId = qrApiResult.UniqueId!,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                BlockchainUrl = status?.BlockchainUrl,
-                ParentBlockchainUrl = status?.ParentQrcode?.BlockchainUrl,
-                TransectionId = status?.TransectionId
-            };
-            if (propertyDto.Video is not null)
-            {
-                fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(propertyDto.Video?.FileName);
-                blobResult = await _storageService.UploadFile(propertyDto.Video!, fileName, _config.PropertiesVideos);
-                property.VideoUrl = blobResult.Uri;
-                property.VideoThumb = propertyDto.VideoThumbnail;
-            }
-            await _dbContext.Properties.AddAsync(property);
-            await _dbContext.SaveChangesAsync();
+            return new AppResult() { Success = false, Message = ErrorMessages.Error500 };
+
+
+
+
+
+
+
+
+
+
+            //List<PropertyImage> propertyImages = [];
+            //PropertyType? propertyType = await _dbContext.PropertyTypes.FindAsync(propertyDto.PropertyTypeId);
+            //// upload floor plan pdf
+            //string fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(propertyDto.FloorPlan?.FileName); 
+            //BlobResult blobResult = await _storageService.UploadFile(propertyDto.FloorPlan!, fileName, _config.FloorPlanDoc);
+            //if (string.IsNullOrEmpty(blobResult.Uri))
+            //{
+            //    LoggerHelper.LogError(new Exception(ErrorMessages.BlobUploadError));
+            //    return new AppResult() { Success = false, Message = ErrorMessages.Error500 };
+            //}
+
+
+            //QrApiResult? qrApiResult = await _blockchainService.GenerateQrCode();
+            //if (qrApiResult == null || qrApiResult.ReturnCode != "1")
+            //{
+            //    LoggerHelper.LogError(new Exception(ErrorMessages.QrCodeError));
+            //    return new AppResult() { Success = false, Message = ErrorMessages.Error500 };
+            //}
+            //PdfSubmitApiResult? pdfSubmit = await _blockchainService.SubmitPdfToBlockchain(blobResult.Uri, qrApiResult.UniqueId!, metaData);
+            //if (pdfSubmit is null || pdfSubmit.ReturnCode != "1")
+            //{
+            //    LoggerHelper.LogError(new Exception(pdfSubmit?.Message));
+            //    return new AppResult() { Success = false, Message = ErrorMessages.Error500 };
+            //}
+            //await Task.Delay(3000);
+            //BlockchainStatus? status = await _blockchainService.BlockchainStatus(qrApiResult.UniqueId, BlockchainStatusParam.UniqueId);
+            //while (status?.ReturnCode != "1")
+            //{
+            //    await Task.Delay(3000);
+            //    status = await _blockchainService.BlockchainStatus(qrApiResult.UniqueId, BlockchainStatusParam.UniqueId);
+            //}
+
+            //Property property = new()
+            //{
+            //    UserId = propertyDto.UserId,
+            //    Address = propertyDto.Address,
+            //    LatLong = new NetTopologySuite.Geometries.Point(propertyDto.Lattitude, propertyDto.Longitude) { SRID = 4326  },
+            //    Unit = propertyDto.Unit,
+            //    Area = propertyDto.Area,
+            //    PropertyTypeId = propertyDto.PropertyTypeId,
+            //    Bedroom = propertyDto.Bedroom,
+            //    YoutubeUrls = propertyDto.YoutubeUrl,
+            //    VimeoUrls = propertyDto.VimeoeUrl,
+            //    FloorPlanUrl = blobResult.Uri,
+            //    Status = true,
+            //    QrCode = qrApiResult.QrImage,
+            //    QrLink = qrApiResult.QrLink,
+            //    UniqueId = qrApiResult.UniqueId!,
+            //    CreatedAt = DateTime.UtcNow,
+            //    UpdatedAt = DateTime.UtcNow,
+            //    BlockchainUrl = status?.BlockchainUrl,
+            //    ParentBlockchainUrl = status?.ParentQrcode?.BlockchainUrl,
+            //    TransectionId = status?.TransectionId
+            //};
+            //if (propertyDto.Video is not null)
+            //{
+            //    fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(propertyDto.Video?.FileName);
+            //    blobResult = await _storageService.UploadFile(propertyDto.Video!, fileName, _config.PropertiesVideos);
+            //    property.VideoUrl = blobResult.Uri;
+            //    property.VideoThumb = propertyDto.VideoThumbnail;
+            //}
+            //await _dbContext.Properties.AddAsync(property);
+            //await _dbContext.SaveChangesAsync();
 
 
             // upload images
-            foreach (IFormFile item in propertyDto.ImageFiles)
-            {
-                fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(item.FileName);
-                BlobResult blob = await _storageService.UploadFile(item, fileName, _config.GalleryImages);
-                propertyImages.Add(new PropertyImage()
-                {
-                    PropertyId = property.Id,
-                    ClientName = item.Name,
-                    Url = blob.Uri,
-                    BlobName = blob.BlobName,
-                    ImageType = PropertyImageType.GalleryImage
-                });
-            }
+            //foreach (IFormFile item in propertyDto.ImageFiles)
+            //{
+            //    fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(item.FileName);
+            //    BlobResult blob = await _storageService.UploadFile(item, fileName, _config.GalleryImages);
+            //    propertyImages.Add(new PropertyImage()
+            //    {
+            //        PropertyId = property.Id,
+            //        ClientName = item.Name,
+            //        Url = blob.Uri,
+            //        BlobName = blob.BlobName,
+            //        ImageType = PropertyImageType.GalleryImage
+            //    });
+            //}
 
-            foreach (IFormFile item in propertyDto.FloorPlanImageFiles)
-            {
-                fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(item.FileName);
-                BlobResult blob = await _storageService.UploadFile(item, fileName, _config.FloorImages);
-                propertyImages.Add(new PropertyImage()
-                {
-                    PropertyId = property.Id,
-                    ClientName = item.Name,
-                    Url = blob.Uri,
-                    BlobName = blob.BlobName,
-                    //ImageType = PropertyImageType.FloorPlanImage
-                });
-            }
+            //foreach (IFormFile item in propertyDto.FloorPlanImageFiles)
+            //{
+            //    fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(item.FileName);
+            //    BlobResult blob = await _storageService.UploadFile(item, fileName, _config.FloorImages);
+            //    propertyImages.Add(new PropertyImage()
+            //    {
+            //        PropertyId = property.Id,
+            //        ClientName = item.Name,
+            //        Url = blob.Uri,
+            //        BlobName = blob.BlobName,
+            //        //ImageType = PropertyImageType.FloorPlanImage
+            //    });
+            //}
 
-            await _dbContext.AddRangeAsync(propertyImages);
-            await _dbContext.SaveChangesAsync();
-
-            return new AppResult() { Success = true, Message = AppMessages.PropertyAddMessage };
+            //await _dbContext.AddRangeAsync(propertyImages);
+            //await _dbContext.SaveChangesAsync();
         }
 
         public async Task<Property?> FindProperty(long id)
@@ -639,7 +750,7 @@ namespace App.Bal.Repositories
         {
             return await _dbContext.UserInvites.
                 Include(e => e.User).
-                ThenInclude(e => e.UserCredentials).
+                ThenInclude(e => e!.UserCredentials).
                 Where(e => e.PropertyId == propertyId).
                 ToListAsync();
         }

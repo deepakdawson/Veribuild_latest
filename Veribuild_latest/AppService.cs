@@ -12,7 +12,7 @@ namespace Veribuild_latest
 {
     public static class AppService
     {
-        const int maxRequestLimit = 209715200; // 200MB
+        const int maxRequestLimit = 1024 * 1024 * 1024; // 1GB
 
         public static IServiceCollection AddVeriBuildServices(this IServiceCollection services, IConfiguration configuration)
         {

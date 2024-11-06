@@ -23,7 +23,7 @@ namespace App.Bal.Support
                 }
                 if(dto.DX == 0) { dto.DX += 20; }
                 PdfPage page = pdfDocument.Pages[dto.PageNumber - 1];
-                double ratio = dto.CanvasWidth / page.Width;
+                double ratio = dto.CanvasWidth / page.Width.Value;
 
                 MemoryStream imageStream = (MemoryStream)imageData.Base64ImageToBitmap();
                 imageStream.Position = 0;

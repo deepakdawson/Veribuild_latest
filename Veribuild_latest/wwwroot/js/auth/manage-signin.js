@@ -100,7 +100,13 @@ function init() {
                     window.location.href = data.message;
                 }
                 if (data.code == 400) {
-                    showError(data.message);
+                    if (isEmailPassword) {
+                        document.querySelector('#password_err_msg').innerHTML = data.message;
+                    }
+                    else {
+                        document.querySelector('#password_phone_err_msg').innerHTML = data.message;
+                    }
+                    //showError(data.message);
                 }
             }, function (xhr) {
                 hideLoader(500);

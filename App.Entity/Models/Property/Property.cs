@@ -30,7 +30,7 @@ namespace App.Entity.Models.Property
         public string? VideoThumb { get; set; }
 
         [StringLength(500)]
-        public string FloorPlanUrl { get; set; } = string.Empty;
+        public string FeatureImageUrl { get; set; } = string.Empty;
         public string? QrCode { get; set; }
         public string? QrLink { get; set; }
         public string UniqueId { get; set; } = string.Empty;

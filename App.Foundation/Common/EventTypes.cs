@@ -12,5 +12,6 @@
         public const string ConcreteSlabCompleted = "Concretee Slab Completed";
         public const string PowerToSiteDone = "Power To Site Done";
         public const string CustomPropertysell = "Custom Property sell";
+        public const string NewPropertyAdded = "New Property Added";
     }
 }
