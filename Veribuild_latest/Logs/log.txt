@@ -1,0 +1,6 @@
+ERR: 07-11-2024 03:40:59 PM	 Value cannot be null. (Parameter 'blobName')
+			    at Azure.Storage.Common.Argument.AssertNotNullOrEmpty(String value, String name)
+   at Azure.Storage.Blobs.BlobContainerClient.GetBlobClient(String blobName)
+   at App.Bal.Repositories.StorageService.DeleteFile(String blobName) in D:\personal Guy Sir\Veribuild_latest\App.Bal\Repositories\StorageService.cs:line 29
+   at Veribuild_latest.Controllers.SettingController.Update(ProfileDto profileDto) in D:\personal Guy Sir\Veribuild_latest\Veribuild_latest\Controllers\SettingController.cs:line 157
+			 

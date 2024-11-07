@@ -1,4 +1,5 @@
 ﻿using App.Foundation.Messages;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace App.Entity.Dto
@@ -27,7 +28,7 @@ namespace App.Entity.Dto
         public string? Address { get; set; } = string.Empty;
 
         public string? Website { get; set; }
-        public string? ProfileImage { get; set; }
+        public IFormFile? ProfileImage { get; set; }
         public double Lattitude { get; set; }
         public double Longitude { get; set; }
     }

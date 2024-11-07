@@ -1,6 +1,8 @@
-﻿@{ 
+﻿@model BaseVM
+@{
     ViewData[Utils.SidebarActiveMenu_Key] = "manageprofile";
     ViewData[Utils.SidebarActiveSubMenu_Key] = "updateprofile";
+    ViewData[Utils.Title_Key] = "Setting";
 }
 <div class="tradesmenPage-section">
     <div class="container">
@@ -18,9 +20,10 @@
                                 <div class="col-md-6">
                                     <div class="form-group upload-wrap">
                                         <div class="img-wrapper">
-                                            <img class="image img-fluid" src="~/images/user_placeholder.svg">
+                                            <img class="image img-fluid" id="profileimgplaceholder" src="@(string.IsNullOrEmpty(Model.User?.Profile) ? "/images/user_placeholder.svg" : $"{Model.BlobStorageUrl}{Model.User?.Profile}")">
                                         </div>
-                                        <button class="btn btn-green">Add Image</button>
+                                        <input type="file" hidden name="profileimage" id="profileimage" accept="image/jpeg, image/png, image/jpg" />
+                                        <button class="btn btn-green" id="btn_addimage">Add Image</button>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -34,80 +37,133 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="lbl-txt">First Name</label>
-                                        <input type="text" class="form-control" placeholder="Enter name">
+                                        <input type="text" class="form-control" placeholder="Enter first name" id="userfirstname" value="@(Model.User?.FirstName)">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="lbl-txt">Last Name</label>
-                                        <input type="text" class="form-control" placeholder="Enter name">
+                                        <input type="text" class="form-control" placeholder="Enter last name" id="userlastname" value="@(Model.User?.LastName)">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="lbl-txt">Email</label>
-                                        <input type="email" class="form-control" placeholder="Enter email">
+                                        <input type="email" class="form-control" placeholder="Enter email" readonly id="useremail" value="@(Model.User?.Email)">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="lbl-txt">Agency Name</label>
-                                        <input type="text" class="form-control" placeholder="Enter name">
+                                        <input type="text" class="form-control" placeholder="Enter agency name" id="agencyName" value="@(Model.User?.AgencyName)">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="lbl-txt">Address</label>
-                                        <input type="text" class="form-control" placeholder="Enter address">
+                                        <input type="text" class="form-control" placeholder="Enter address" id="userAddress" value="@(Model.User?.Address)">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="lbl-txt">Website</label>
-                                        <input type="text" class="form-control" placeholder="Enter name">
+                                        <input type="text" class="form-control" placeholder="Enter website" id="userwebsite" value="@(Model.User?.Website)">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="lbl-txt">Phone Number</label>
-                                        <input type="text" class="form-control" placeholder="Enter here">
+                                        <select name="" class="form-control" id="usercountrycode">
+                                            @foreach (Country country in Model.Countries)
+                                            {
+                                                if (country.Id == Model.User?.PhoneCodeId)
+                                                {
+                                                    <option value="@country.Id" selected data-code="+@country.PhoneCode" data-iso="@(country.ISO)">@(country.NickName) (+@country.PhoneCode)</option>
+
+                                                }
+                                                else if (country.Id == 13)
+                                                {
+                                                    <option value="@country.Id" selected data-code="+@country.PhoneCode" data-iso="@(country.ISO)">@(country.NickName) (+@country.PhoneCode)</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@country.Id" data-code="+@country.PhoneCode" data-iso="@(country.ISO)">@(country.NickName) (+@country.PhoneCode)</option>
+                                                }
+                                            }
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="lbl-txt"></label>
                                         <div class="input-group mt-2">
-                                            <input type="text" class="form-control" placeholder="Enter number">
-                                            <span class="btn-green">Verify</span>
+                                            <input type="text" class="form-control number-field" placeholder="Enter number" id="userphonenumber" value="@(Model.User?.PhoneNumber)" maxlength="11">
+                                            <button class="btn btn-green" id="btn_verify_otp">Verify</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 d-none" id="optcontainer">
+                                    <div class="form-group">
+                                        <label class="lbl-txt"></label>
+                                        <div class="input-group mt-2">
+                                            <input type="text" class="form-control number-field" placeholder="Enter otp" id="userphoneverifyotp" maxlength="6">
+                                            <button class="btn btn-green" id="btn_submit_otp">Submit</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                             <div class="cta-box">
-                                <button type="button" class="btn btn-green">Save</button>
+                                <button type="button" class="btn btn-green" id="btn_saveprofile">Save</button>
                             </div>
                         </div>
                     </figure>
                     <figure>
                         <div class="sub-box">
-                            <div class="row">
+                            <div class="row" id="credcontainer">
+                                @foreach (UserCredential userCredential in Model.User!.UserCredentials)
+                                {
+                                    <div class="col-sm-2 position-relative">
+                                        <span class="btnClose" onclick="removeCredential(this, @(userCredential.Id))"><i class="fa-solid fa-xmark"></i></span>
+                                        <div class="form-group">
+                                            <h5 class="file-upload-head">Credentials</h5>
+                                            <div class="file-wrapper">
+                                                <label class="w-100" for="">
+                                                    <img src="/images/pdf-demo.svg" class="img-fluid cursor-point" data-pdf="@(userCredential.Path)" data-role="stored-cred" />
+                                                    <input class="drop-file" type="file" accept="application/pdf" onchange="makeThumb(this)" name="credentialfile" readonly>
+                                                </label>
+                                                <div class="title-field">
+                                                    <input type="text" class="form-control" placeholder="title" name="credentialtitle" value="@(userCredential.Name)"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <h5 class="file-upload-head">Credentials</h5>
                                         <div class="file-wrapper">
                                             <label class="w-100" for="doc113">
-                                                <img src="assets/img/pdf-demo.svg" class="img-fluid" />
-                                                <input class="drop-file" type="file" name='' id="doc113">
+                                                <img src="~/images/pdf-demo.svg" class="img-fluid cursor-point" id="openCredpdf" />
+                                                <input class="drop-file" type="file" name="credentialfile" accept="application/pdf" onchange="makeThumb(this)" >
                                             </label>
                                             <div class="title-field">
-                                                <input type="text" class="form-control" placeholder="" />
+                                                <input type="text" class="form-control" placeholder="Name" name="credentialtitle"/>
                                             </div>
                                         </div>
                                         <button type="button" class="btn btn-green" id="add-pdf-box">Add more</button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="col">
+                                    <button type="button" class="btn btn-green" id="btn_savecredential">Save</button>
+                                </div>
+                            </div>
+                        </div> 
                     </figure>
                     <figure>
                         <h6>Change Password</h6>
@@ -138,3 +194,7 @@
         </div>
     </div>
 </div>
+@section scripts{
+    <script src="~/lib/pdfjs/build/pdf.js" type="text/javascript"></script>
+    <script src="~/js/setting/profile.js" type="module"></script>
+}

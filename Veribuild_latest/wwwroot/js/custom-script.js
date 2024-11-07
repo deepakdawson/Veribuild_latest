@@ -1,13 +1,13 @@
 
 
-//const optionMenu = document.querySelector(".btn-nav"),
-//  selectBtn = optionMenu.querySelector(".nav-link"),
-//  options = optionMenu.querySelectorAll(".option"),
-//  sBtn_text = optionMenu.querySelector(".sBtn-text");
+const optionMenu = document.querySelector(".btn-nav"),
+  selectBtn = optionMenu.querySelector(".nav-link"),
+  options = optionMenu.querySelectorAll(".option"),
+  sBtn_text = optionMenu.querySelector(".sBtn-text");
 
-//selectBtn.addEventListener("click", () =>
-//  optionMenu.classList.toggle("active")
-//);
+selectBtn.addEventListener("click", () =>
+  optionMenu.classList.toggle("active")
+);
 
 
 
@@ -156,13 +156,13 @@
 //		reader.readAsDataURL(this.files[0]);
 //	});
 	
-//	var addPDF = document.getElementById('add-pdf-box');
-//	  if(addPDF){
-//		addPDF.addEventListener('click', function () {
-//		var customEle = '<div class="col-sm-2 position-relative"><span class="btnClose" onclick="removeUrl(this)"><i class="fa-solid fa-xmark"></i></span><div class="form-group"><h5 class="file-upload-head">Credentials</h5><div class="file-wrapper"><label class="w-100" for="doc113"><img src="assets/img/pdf-demo.svg" class="img-fluid" /><input class="drop-file" type="file" id="doc113"></label><div class="title-field"><input type="text" class="form-control" placeholder="title" /></div></div></div></div>';
-//		addPDF.parentElement.parentElement.parentElement.insertAdjacentHTML('beforeend', customEle)
-//	  });  
-//    }
+	//var addPDF = document.getElementById('add-pdf-box');
+	//  if(addPDF){
+	//	addPDF.addEventListener('click', function () {
+	//	var customEle = '<div class="col-sm-2 position-relative"><span class="btnClose" onclick="removeUrl(this)"><i class="fa-solid fa-xmark"></i></span><div class="form-group"><h5 class="file-upload-head">Credentials</h5><div class="file-wrapper"><label class="w-100" for="doc113"><img src="assets/img/pdf-demo.svg" class="img-fluid" /><input class="drop-file" type="file" id="doc113"></label><div class="title-field"><input type="text" class="form-control" placeholder="title" /></div></div></div></div>';
+	//	addPDF.parentElement.parentElement.parentElement.insertAdjacentHTML('beforeend', customEle)
+	//  });  
+ //   }
 	
 //	$(function () {
 //      $('#mobile1').intlTelInput({

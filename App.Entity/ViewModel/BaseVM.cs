@@ -6,6 +6,7 @@ namespace App.Entity.ViewModel
 {
     public class BaseVM : IBaseModel
     {
+
         public BaseVM()
         {
             Countries = [];
@@ -15,6 +16,7 @@ namespace App.Entity.ViewModel
         public AppUser? User { get; set; }
         public string GoogleApiKey { get; set; } = string.Empty;
         public List<AppUserRole> UserRoles { get; set; } = [];
-
+        public string? UserId { get; set; }
+        public string? BlobStorageUrl { get; set; }
     }
 }

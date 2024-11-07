@@ -9,6 +9,7 @@ namespace App.Entity.ViewModel.Interfaces
         public AppUser? User { get; set; }
         public string GoogleApiKey { get; set; }
         public List<AppUserRole> UserRoles { get; set; }
-
+        public string? UserId {  get; set; }
+        public string? BlobStorageUrl {  get; set; }
     }
 }

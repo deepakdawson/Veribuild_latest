@@ -205,7 +205,7 @@ namespace App.Bal.Repositories
         #region Profile Methods
         public async Task<bool> SaveCredentails(AppUser appUser, IFormCollection collection)
         {
-            List<UserCredential> userCredentials = new();
+            List<UserCredential> userCredentials = [];
             int totalFiles = Convert.ToInt32(collection["TotalFiles"]);
             for (int i = 1; i <= totalFiles; i++)
             {
