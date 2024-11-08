@@ -40,7 +40,7 @@ namespace App.Bal.Services
 
         #region Profile Methods
         public Task<bool> SaveCredentails(AppUser appUser, IFormCollection collection);
-        public Task<bool> RemoveCredentails(long id);
+        public Task<AppResult> RemoveCredentails(long id);
         #endregion
 
         #region Other Methods

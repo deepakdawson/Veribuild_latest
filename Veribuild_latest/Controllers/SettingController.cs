@@ -1,4 +1,5 @@
 ﻿using App.Bal.Services;
+using App.Entity;
 using App.Entity.Dto;
 using App.Entity.Http;
 using App.Entity.Models.Auth;
@@ -7,6 +8,7 @@ using App.Foundation.Common;
 using App.Foundation.Messages;
 using App.Foundation.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Plivo.Exception;
 using System.Security.Claims;
@@ -181,6 +183,30 @@ namespace Veribuild_latest.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(PasswordDto passwordDto)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    AppUser? existingUser = await _userService.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                    PasswordVerificationResult result = await _userService.ResetPassword(existingUser!, passwordDto);
+                    if (result == PasswordVerificationResult.Success)
+                        return Json(new AppResponse { Code = 200, Message = AppMessages.PasswordUpdateMessage });
+                    return Json(new AppResponse { Code = 400, Message = ErrorMessages.InvalidCurrentPassword });
+                }
+                List<string> errors = ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage).ToList();
+                string errorMessage = string.Join("<br>", errors);
+                return Json(new AppResponse { Code = 400, Message = errorMessage });
+            }
+            catch (Exception e)
+            {
+                LoggerHelper.LogError(e);
+                return Json(new AppResponse { Code = 500, Message = ErrorMessages.Error500 });
+            }
+        }
+
         #endregion
 
 
@@ -206,10 +232,8 @@ namespace Veribuild_latest.Controllers
         {
             try
             {
-                bool deleted = await _userService.RemoveCredentails(id);
-                if (deleted)
-                    return Json(new AppResponse { Code = 200, Message = AppMessages.CredentailRemoveMessage });
-                return Json(new AppResponse { Code = 400, Message = ErrorMessages.Error500 });
+                AppResult result = await _userService.RemoveCredentails(id);
+                return Json(result);
             }
             catch (Exception e)
             {
@@ -219,5 +243,10 @@ namespace Veribuild_latest.Controllers
         }
         #endregion
 
+
+        public IActionResult AccountDetails()
+        {
+            return View();
+        }
     }
 }

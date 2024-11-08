@@ -1,0 +1,44 @@
+﻿@{ 
+    ViewData[Utils.SidebarActiveMenu_Key] = "manageprofile";
+    ViewData[Utils.SidebarActiveSubMenu_Key] = "viewprofile";
+    ViewData[Utils.Title_Key] = "Setting";
+}
+
+<section class="tradesmenPage-section">
+    <div class="container">
+        <h2>Organisation Settings</h2>
+        <div id="wrapper">
+            <partial name="~/Views/Shared/Common/_Sidebar.cshtml" />
+            <div class="content-wrapper">
+                <div class="accountDetail-box">
+                    <p>You can view your account information on this page</p>
+                    <figure>
+                        <h6>View Account Details</h6>
+                        <div class="sub-box">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label class="lbl-txt">Your Role</label>
+                                </div>
+                                <div class="col-8">
+                                    <label class="lbl-txt">Builder</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sub-box">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label class="lbl-txt">Actions Allowed</label>
+                                </div>
+                                <div class="col-8">
+                                    <label class="lbl-txt">Manage User</label>
+                                    <label class="lbl-txt">Manage Forms</label>
+                                    <label class="lbl-txt">Manage Membership</label>
+                                </div>
+                            </div>
+                        </div>
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

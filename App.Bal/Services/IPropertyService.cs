@@ -11,8 +11,8 @@ namespace App.Bal.Services
         public Task<int> FindPropertyMatch(string address);
         public Task<List<PropertyType>> GetPropertyTypesAsync();
         public Task<AppResult> AddProperty(PropertyDto propertyDto);
-        public Task<List<Property>> GetProperties(string userId);
-        public Task<List<Property>> GetProperties(string userId, int propertyTypeId, string address);
+        public Task<List<Property>> GetProperties(string? userId);
+        public Task<List<Property>> GetProperties(string? userId, int? propertyTypeId = null, string? address = null);
         public Task<Property?> FindProperty(long id);
         public Task<Property?> FindProperty(string uniqueId);
         public Task<Property?> FindPropertyAlon(string uniqueId);

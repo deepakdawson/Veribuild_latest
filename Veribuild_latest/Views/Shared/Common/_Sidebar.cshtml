@@ -7,7 +7,7 @@
             <a href="#" class="nav-link">Organisation Settings</a>
             <ul class="nav-treeview">
                 <li class="nav-item">
-                    <a href="/" class="nav-link">Membership & Billing</a>
+                    <a href="/setting/membership" class="nav-link">Membership & Billing</a>
                 </li>
             </ul>
         </li>
@@ -15,10 +15,10 @@
             <a href="#" class="nav-link @(ViewData[Utils.SidebarActiveMenu_Key]?.ToString() == "manageprofile" ? "active" : "" )">Manage Your Profile</a>
             <ul class="nav-treeview">
                 <li class="nav-item">
-                    <a href="/" class="nav-link  @(ViewData[Utils.SidebarActiveSubMenu_Key]?.ToString() == "updateprofile" ? "active" : "" )">Update My Details</a>
+                    <a href="/setting" class="nav-link  @(ViewData[Utils.SidebarActiveSubMenu_Key]?.ToString() == "updateprofile" ? "active" : "" )">Update My Details</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/" class="nav-link  @(ViewData[Utils.SidebarActiveSubMenu_Key]?.ToString() == "viewprofile" ? "active" : "")">View Account Details</a>
+                    <a href="/setting/accountdetails" class="nav-link  @(ViewData[Utils.SidebarActiveSubMenu_Key]?.ToString() == "viewprofile" ? "active" : "")">View Account Details</a>
                 </li>
             </ul>
         </li>

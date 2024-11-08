@@ -57,8 +57,10 @@ namespace App.Bal.Repositories
             string metaData = $"Address: {propertyDto.Address}||Lat: {propertyDto.Lattitude}||Long: {propertyDto.Longitude}||Area: {propertyDto.Area}M2||Type: {propertyType?.Name}||Bedroom: {propertyDto.Bedroom}";
 
             BlockchainTriggerResponse? blockchainTriggerResponse = await _blockchainService.BlockchainTrigger(metaData);
-            if (blockchainTriggerResponse != null && blockchainTriggerResponse.ReturnCode == "1")
+            QrApiResult? qrApiResult = await _blockchainService.GenerateQrCode();
+            if (blockchainTriggerResponse != null && blockchainTriggerResponse.ReturnCode == "1" && qrApiResult != null)
             {
+
                 string featureImageFileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(propertyDto.MainImage?.FileName);
                 BlobResult featureImageBlobResult = await _storageService.UploadFile(file: propertyDto.MainImage!, fileName: featureImageFileName, folderName: _config.GalleryImages);
                 if (string.IsNullOrEmpty(featureImageBlobResult.Uri))
@@ -80,15 +82,12 @@ namespace App.Bal.Repositories
                     VimeoUrls = propertyDto.VimeoeUrl,
                     EasyNumber = propertyDto.EasyNumber,
                     FeatureImageUrl = featureImageBlobResult.Uri,
-                    Status = true,
-                    QrCode = null,
-                    QrLink = null,
-                    UniqueId = string.Empty,
+                    Status = PropertyStatus.Available,
+                    QrCode = qrApiResult.QrImage,
+                    QrLink = qrApiResult.QrLink,
+                    UniqueId = qrApiResult.UniqueId!,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
-                    BlockchainUrl = null,
-                    ParentBlockchainUrl = null,
-                    TransectionId = null
                 };
 
                 if (propertyDto.Video is not null)
@@ -101,8 +100,7 @@ namespace App.Bal.Repositories
                 await _dbContext.Properties.AddAsync(property);
                 await _dbContext.SaveChangesAsync();
 
-                string fileName = string.Empty;
-
+                string fileName;
                 foreach (IFormFile formFile in propertyDto.ImageFiles)
                 {
                     fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(formFile.FileName);
@@ -152,112 +150,6 @@ namespace App.Bal.Repositories
             }
 
             return new AppResult() { Success = false, Message = ErrorMessages.Error500 };
-
-
-
-
-
-
-
-
-
-
-            //List<PropertyImage> propertyImages = [];
-            //PropertyType? propertyType = await _dbContext.PropertyTypes.FindAsync(propertyDto.PropertyTypeId);
-            //// upload floor plan pdf
-            //string fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(propertyDto.FloorPlan?.FileName); 
-            //BlobResult blobResult = await _storageService.UploadFile(propertyDto.FloorPlan!, fileName, _config.FloorPlanDoc);
-            //if (string.IsNullOrEmpty(blobResult.Uri))
-            //{
-            //    LoggerHelper.LogError(new Exception(ErrorMessages.BlobUploadError));
-            //    return new AppResult() { Success = false, Message = ErrorMessages.Error500 };
-            //}
-
-
-            //QrApiResult? qrApiResult = await _blockchainService.GenerateQrCode();
-            //if (qrApiResult == null || qrApiResult.ReturnCode != "1")
-            //{
-            //    LoggerHelper.LogError(new Exception(ErrorMessages.QrCodeError));
-            //    return new AppResult() { Success = false, Message = ErrorMessages.Error500 };
-            //}
-            //PdfSubmitApiResult? pdfSubmit = await _blockchainService.SubmitPdfToBlockchain(blobResult.Uri, qrApiResult.UniqueId!, metaData);
-            //if (pdfSubmit is null || pdfSubmit.ReturnCode != "1")
-            //{
-            //    LoggerHelper.LogError(new Exception(pdfSubmit?.Message));
-            //    return new AppResult() { Success = false, Message = ErrorMessages.Error500 };
-            //}
-            //await Task.Delay(3000);
-            //BlockchainStatus? status = await _blockchainService.BlockchainStatus(qrApiResult.UniqueId, BlockchainStatusParam.UniqueId);
-            //while (status?.ReturnCode != "1")
-            //{
-            //    await Task.Delay(3000);
-            //    status = await _blockchainService.BlockchainStatus(qrApiResult.UniqueId, BlockchainStatusParam.UniqueId);
-            //}
-
-            //Property property = new()
-            //{
-            //    UserId = propertyDto.UserId,
-            //    Address = propertyDto.Address,
-            //    LatLong = new NetTopologySuite.Geometries.Point(propertyDto.Lattitude, propertyDto.Longitude) { SRID = 4326  },
-            //    Unit = propertyDto.Unit,
-            //    Area = propertyDto.Area,
-            //    PropertyTypeId = propertyDto.PropertyTypeId,
-            //    Bedroom = propertyDto.Bedroom,
-            //    YoutubeUrls = propertyDto.YoutubeUrl,
-            //    VimeoUrls = propertyDto.VimeoeUrl,
-            //    FloorPlanUrl = blobResult.Uri,
-            //    Status = true,
-            //    QrCode = qrApiResult.QrImage,
-            //    QrLink = qrApiResult.QrLink,
-            //    UniqueId = qrApiResult.UniqueId!,
-            //    CreatedAt = DateTime.UtcNow,
-            //    UpdatedAt = DateTime.UtcNow,
-            //    BlockchainUrl = status?.BlockchainUrl,
-            //    ParentBlockchainUrl = status?.ParentQrcode?.BlockchainUrl,
-            //    TransectionId = status?.TransectionId
-            //};
-            //if (propertyDto.Video is not null)
-            //{
-            //    fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(propertyDto.Video?.FileName);
-            //    blobResult = await _storageService.UploadFile(propertyDto.Video!, fileName, _config.PropertiesVideos);
-            //    property.VideoUrl = blobResult.Uri;
-            //    property.VideoThumb = propertyDto.VideoThumbnail;
-            //}
-            //await _dbContext.Properties.AddAsync(property);
-            //await _dbContext.SaveChangesAsync();
-
-
-            // upload images
-            //foreach (IFormFile item in propertyDto.ImageFiles)
-            //{
-            //    fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(item.FileName);
-            //    BlobResult blob = await _storageService.UploadFile(item, fileName, _config.GalleryImages);
-            //    propertyImages.Add(new PropertyImage()
-            //    {
-            //        PropertyId = property.Id,
-            //        ClientName = item.Name,
-            //        Url = blob.Uri,
-            //        BlobName = blob.BlobName,
-            //        ImageType = PropertyImageType.GalleryImage
-            //    });
-            //}
-
-            //foreach (IFormFile item in propertyDto.FloorPlanImageFiles)
-            //{
-            //    fileName = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks + Path.GetExtension(item.FileName);
-            //    BlobResult blob = await _storageService.UploadFile(item, fileName, _config.FloorImages);
-            //    propertyImages.Add(new PropertyImage()
-            //    {
-            //        PropertyId = property.Id,
-            //        ClientName = item.Name,
-            //        Url = blob.Uri,
-            //        BlobName = blob.BlobName,
-            //        //ImageType = PropertyImageType.FloorPlanImage
-            //    });
-            //}
-
-            //await _dbContext.AddRangeAsync(propertyImages);
-            //await _dbContext.SaveChangesAsync();
         }
 
         public async Task<Property?> FindProperty(long id)
@@ -289,40 +181,45 @@ namespace App.Bal.Repositories
             return await _dbContext.Properties.Where(e => e.Address == address).CountAsync();
         }
 
-        public async Task<List<Property>> GetProperties(string userId)
+        public async Task<List<Property>> GetProperties(string? userId)
         {
-            List<long> propertyIds = await _dbContext.UserInvites.
-                Where(e => e.UserId == userId).
-                Select(e => e.PropertyId).
-                Distinct().
-                ToListAsync();
             return await _dbContext.Properties.
-                Where(e => e.UserId == userId || propertyIds.Contains(e.Id)).
+                Include(e => e.User).
+                Where(e => e.UserId == userId).
+                Select(e => new Property()
+                {
+                    Id = e.Id,
+                    Address = e.Address,
+                    UniqueId = e.UniqueId,
+                    CreatedAt = e.CreatedAt,
+                    BuilderName = $"{e.User!.LastName} {e.User!.LastName}",
+                    UserPhoneNumber = $"{e.User.PhoneCode} {e.User.PhoneNumber}"
+                }).
                 ToListAsync();
         }
 
-        public async Task<List<Property>> GetProperties(string userId, int propertyTypeId, string address)
+        public async Task<List<Property>> GetProperties(string? userId, int? propertyTypeId = null, string? address = null)
         {
             IQueryable<Property> properties = _dbContext.Properties.Include(e => e.User);
             if (propertyTypeId > 0)
             {
                 properties = properties.Where(e => e.PropertyTypeId == propertyTypeId);
             }
-            List<long> propertyIds = await _dbContext.UserInvites.
-                Where(e => e.UserId == userId).
-                Select(e => e.PropertyId).
-                Distinct().
-                ToListAsync();
-            if (string.IsNullOrEmpty(address))
+            if (!string.IsNullOrEmpty(address))
             {
-                return await properties.
-                                Where(e => e.UserId == userId || propertyIds.Contains(e.Id)).
-                                ToListAsync();
+                properties = properties.Where(e => e.Address.Contains(address));
             }
             
-            return await properties.
-                Where(e => e.UserId == userId || propertyIds.Contains(e.Id)).
-                Where(e => e.Address.Contains(address)).
+            return await properties.Where(e => e.UserId == userId).
+                Select(e => new Property()
+                {
+                    Id = e.Id,
+                    Address = e.Address,
+                    UniqueId = e.UniqueId,
+                    CreatedAt = e.CreatedAt,
+                    BuilderName = $"{e.User!.LastName} {e.User!.LastName}",
+                    UserPhoneNumber = $"{e.User.PhoneCode} {e.User.PhoneNumber}"
+                }).
                 ToListAsync();
         }
 

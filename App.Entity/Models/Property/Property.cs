@@ -34,15 +34,22 @@ namespace App.Entity.Models.Property
         public string? QrCode { get; set; }
         public string? QrLink { get; set; }
         public string UniqueId { get; set; } = string.Empty;
-        public string? TransectionId { get; set; }
-        public string? BlockchainUrl { get; set; }
-        public string? ParentBlockchainUrl { get; set; }
-        public bool Status { get; set; }
+
+        [StringLength(450)]
+        public string? Status { get; set; }
+
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
         public virtual ICollection<PropertyFile> PropertyFiles { get; set; } = [];
         public virtual ICollection<PropertyContract> PropertyContracts { get; set; } = [];
         public virtual ICollection<PropertyDocument> PropertyDocuments { get; set; } = [];
+
+        [NotMapped]
+        public string? BuilderName {  get; set; }
+
+        [NotMapped]
+        public string? UserPhoneNumber { get; set; }
+
     }
 }

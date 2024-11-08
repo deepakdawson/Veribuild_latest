@@ -23,6 +23,11 @@ function showError(msg) {
         icon: "error",
         title: "Oops...",
         html: msg,
+        customClass: {            
+            confirmButton: 'btn btn-green',
+            denyButton: 'btn btn-green',
+            cancelButton: 'btn btn-green',
+        }
     });
 }
 function showErrorReload(msg) {
@@ -30,6 +35,11 @@ function showErrorReload(msg) {
         icon: "error",
         title: "Oops...",
         html: msg,
+        customClass: {
+            confirmButton: 'btn btn-green',
+            denyButton: 'btn btn-green',
+            cancelButton: 'btn btn-green',
+        }
     }).then(function () {
         window.location.reload();
     });
@@ -39,6 +49,11 @@ function showSuccess(message, title = 'Success') {
         icon: "success",
         title: title,
         html: message,
+        customClass: {
+            confirmButton: 'btn btn-green',
+            denyButton: 'btn btn-green',
+            cancelButton: 'btn btn-green',
+        }
     });
 }
 function showSuccessReload(messagem, title = 'Success') {
@@ -46,6 +61,11 @@ function showSuccessReload(messagem, title = 'Success') {
         icon: "success",
         title: title,
         html: messagem,
+        customClass: {
+            confirmButton: 'btn btn-green',
+            denyButton: 'btn btn-green',
+            cancelButton: 'btn btn-green',
+        }
     }).then(() => {
         window.location.reload();
     });

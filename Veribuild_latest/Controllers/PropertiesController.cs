@@ -22,8 +22,10 @@ namespace Veribuild_latest.Controllers
         private readonly IConfiguration _configuration = configuration;
         private readonly PropertyVM _propertyVM = new ();
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string? address)
         {
+            _propertyVM.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            _propertyVM.Properties.AddRange(await _propertyService.GetProperties(_propertyVM.UserId, null, address));
             return View();
         }
         

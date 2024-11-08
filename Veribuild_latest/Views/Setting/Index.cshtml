@@ -36,13 +36,13 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="lbl-txt">First Name</label>
+                                        <label class="lbl-txt">First Name  <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" placeholder="Enter first name" id="userfirstname" value="@(Model.User?.FirstName)">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="lbl-txt">Last Name</label>
+                                        <label class="lbl-txt">Last Name <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" placeholder="Enter last name" id="userlastname" value="@(Model.User?.LastName)">
                                     </div>
                                 </div>
@@ -131,10 +131,10 @@
                                             <div class="file-wrapper">
                                                 <label class="w-100" for="">
                                                     <img src="/images/pdf-demo.svg" class="img-fluid cursor-point" data-pdf="@(userCredential.Path)" data-role="stored-cred" />
-                                                    <input class="drop-file" type="file" accept="application/pdf" onchange="makeThumb(this)" name="credentialfile" readonly>
+                                                    <input class="drop-file" type="file" accept="application/pdf" onchange="makeThumb(this)" name="credentialfile">
                                                 </label>
                                                 <div class="title-field">
-                                                    <input type="text" class="form-control" placeholder="title" name="credentialtitle" value="@(userCredential.Name)"/>
+                                                    <input type="text" class="form-control" placeholder="title" name="credentialtitle" value="@(userCredential.Name)" readonly/>
                                                 </div>
                                             </div>
                                         </div>
@@ -169,22 +169,31 @@
                         <h6>Change Password</h6>
                         <div class="sub-box">
                             <div class="form-group">
-                                <label class="lbl-txt">Current password</label>
-                                <input type="password" class="form-control" placeholder="Enter here">
-                                <span class="input-icon"><img src="assets/img/icons/eye-icon.svg" alt="icon"></span>
+                                <label class="lbl-txt">Current password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" placeholder="Enter here" id="usercurrentpassword">
+                                <span class="input-icon"><img src="~/images/icons/eye-icon.svg" alt="icon" data-role="password-toggle"></span>
+                                <span class="text-red-600 mb-3 mt-2" style="display:none" id="currentpassworderror">Password did not match</span>
                             </div>
                             <div class="form-group">
-                                <label class="lbl-txt">New password</label>
-                                <input type="password" class="form-control" placeholder="Enter here">
-                                <span class="input-icon"><img src="assets/img/icons/eye-icon.svg" alt="icon"></span>
+                                <label class="lbl-txt">New password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" placeholder="Enter here" id="user_new_password">
+                                <span class="input-icon mb-3"><img src="~/images/icons/eye-icon.svg" alt="icon" data-role="password-toggle"></span>
+                                <span class="red mb-3 charlength_validate" role="alert" style="display:none">Password must be minimum of 8 characters</span>
+                                <span class="red mb-3 capital_validate" role="alert" style="display:none">Password must include at-least one uppercase letter e.g.ABC</span>
+                                <span class="red mb-3 smallcase_validate" role="alert" style="display:none">Password must include at-least one lowercase letter e.g. abc</span>
+                                <span class="red mb-3 numeric_validate" role="alert" style="display:none">Password must include at-least one number e.g. 123 </span>
+                                <span class="red mb-3 special_validate" role="alert" style="display:none">Password must include at-least one symbol e.g. (@@!#$?)</span>
                             </div>
                             <div class="form-group">
-                                <label class="lbl-txt">Confirm password</label>
-                                <input type="password" class="form-control" placeholder="Enter here">
-                                <span class="input-icon"><img src="assets/img/icons/eye-icon.svg" alt="icon"></span>
+                                <label class="lbl-txt">Confirm password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" placeholder="Enter here" id="userconfirmpassword">
+                                <span class="input-icon"><img src="~/images/icons/eye-icon.svg" alt="icon" data-role="password-toggle"></span>
+                                <div class="red text-red-600 mb-3 mt-2" id="newpassmatch_password" style="display: none">
+                                    Password and Confirm password must need to be matched
+                                </div>
                             </div>
                             <div class="cta-box">
-                                <button type="button" class="btn btn-green">Save password</button>
+                                <button type="button" class="btn btn-green" id="btn_udpatepassword">Save password</button>
                             </div>
                         </div>
                     </figure>

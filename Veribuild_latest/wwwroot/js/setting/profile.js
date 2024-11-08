@@ -132,7 +132,7 @@ function mapUi() {
                                     <input class="drop-file" type="file" accept="application/pdf" onchange="makeThumb(this)" name="credentialfile">
                                 </label>
                                 <div class="title-field">
-                                    <input type="text" class="form-control" placeholder="title" name="credentialtitle"/>
+                                    <input type="text" class="form-control" placeholder="Name" name="credentialtitle"/>
                                 </div>
                             </div>
                         </div>
@@ -143,7 +143,6 @@ function mapUi() {
             this.nextElementSibling?.click();
         });
     });
-
     document.querySelector('#btn_savecredential').addEventListener('click', function (e) {
         e.preventDefault();
         let validate = true;
@@ -178,10 +177,95 @@ function mapUi() {
 
     });
 
+    // password manage
+    document.querySelectorAll('img[data-role="password-toggle"]').forEach(img => {
+        img.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (this.parentElement.parentElement.querySelector('input').type == 'password') {
+                this.parentElement.parentElement.querySelector('input').type = 'text';
+                this.src = '/images/icons/eye-icon-active.svg';
+            } else {
+                this.parentElement.parentElement.querySelector('input').type = 'password';
+                this.src = '/images/icons/eye-icon.svg'
+            }
+        });
+    });
+    $('#user_new_password').on('keyup', function () {
+        $(this).css('border', '2px solid red');
+        $(this).siblings('span[role="alert"]').css('display', 'block');
+        let CheckVal = $(this).val();
+        validateCheckPassword(CheckVal);
+        if (Validation.password(CheckVal)) {
+            $(this).css('border', '1px solid #a7a7a7');
+        }
+        if (CheckVal.length == 0) {
+            $(this).siblings('span').css('display', 'none');
+        }
+    });
+
+    document.querySelector('#userconfirmpassword').addEventListener('keyup', function (e) {
+        this.style.border = '2px solid red';
+        document.querySelector('#newpassmatch_password').style.display = 'block';
+        let newPassword = document.querySelector('#user_new_password').value;
+        if (this.value == newPassword) {
+            this.style.border = '1px solid #a7a7a7';
+            document.querySelector('#newpassmatch_password').style.display = 'none';
+        }
+    });
+    document.querySelector('#btn_udpatepassword').addEventListener('click', function (e) {
+        e.preventDefault();
+        let list = [document.querySelector('#usercurrentpassword'), document.querySelector('#user_new_password'), document.querySelector('#userconfirmpassword')];
+        if ((new Validation()).validate(list)) {
+            return;
+        }
+        showLoader(LoaderMessages.Updating, 3000, 80);
+        const fd = new FormData();
+        fd.append('CurrentPassword', document.getElementById('usercurrentpassword').value);
+        fd.append('NewPassword', document.getElementById('user_new_password').value);
+        fd.append('ConfirmPassword', document.getElementById('userconfirmpassword').value);
+        let client = new HttpClient();
+        client.post('/setting/UpdatePassword', fd, function (data) {
+            hideLoader(500);
+            if (data.code == 200) {
+                showSuccessReload(data.message);
+            }
+            else {
+                showError(data.message);
+            }
+        }, function (xhr) {
+            hideLoader(500);
+            console.log(xhr);
+            showError(ErrorMessages.Error500);
+        }, this);
+    });
 }
+function validateCheckPassword(passval) {
+    var upperCase = new RegExp('[A-Z]');
+    var lowerCase = new RegExp('[a-z]');
+    var numbers = new RegExp('[0-9]');
+    if (passval.length > 7) {
+        $('.charlength_validate').hide();
+    }
 
-
-
+    if (passval.match(upperCase)) {
+        $('.capital_validate').hide();
+    }
+    if (passval.match(lowerCase)) {
+        $('.smallcase_validate').hide();
+    }
+    if (passval.match(numbers)) {
+        $('.numeric_validate').hide();
+    }
+    if (/^[a-zA-Z0-9- ]*$/.test(passval) == false) {
+        $('.special_validate').hide();
+    }
+    if (passval.length > 7 && passval.match(upperCase) && passval.match(lowerCase) && passval.match(numbers) && /^[a-zA-Z0-9- ]*$/.test(passval) == false) {
+        $('#txt_cnfrmpassword').prop('disabled', false);
+    }
+    else {
+        $('#txt_cnfrmpassword').prop('disabled', true);
+    }
+}
 function formatState(state) {
     if (!$(state.element).data('iso')) { return state.text; }
     var url = $(state.element).data('iso')
@@ -236,7 +320,8 @@ function makeThumb(context) {
                         var height = Math.floor(viewport.height * outputScale);
 
                         const canvas = document.createElement('canvas');
-                        canvas.style.width = canvas.width = width;
+                        canvas.width = 180;
+                        canvas.height = 210;
 
                         var transform = outputScale !== 1
                             ? [outputScale, 0, 0, outputScale, 0, 0]
@@ -297,20 +382,32 @@ function makeThumbSplit(page) {
     });
 }
 function deleteCredential(id) {
-    showLoader(LoaderMessages.Updating, 3000, 80);
-    let url = '/setting/DeleteCredential?id=' + (+id);
-    let client = new HttpClient();
-    client.deleteRequest(url, function (data) {
-        hideLoader(1000);
-        if (data.code == 200) {
-            showSuccessReload(data.message);
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Remove"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            showLoader(LoaderMessages.Updating, 3000, 80);
+            let url = '/setting/DeleteCredential?id=' + (+id);
+            let client = new HttpClient();
+            client.deleteRequest(url, function (data) {
+                hideLoader(1000);
+                if (data.code == 200) {
+                    showSuccessReload(data.message);
+                }
+                else {
+                    showError(data.message);
+                }
+            }, function (xhr) {
+                hideLoader(1000);
+                console.log(xhr);
+                showError(ErrorMessages.Error500);
+            });
         }
-        else {
-            showError(data.message);
-        }
-    }, function (xhr) {
-        hideLoader(1000);
-        console.log(xhr);
-        showError(ErrorMessages.Error500);
     });
 }

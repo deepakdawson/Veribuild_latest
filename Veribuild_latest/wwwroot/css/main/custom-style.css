@@ -1614,3 +1614,9 @@ body{
 .cursor-point{
 	cursor: pointer;
 }
+.red {
+	color: red !important;
+	width: 100%;
+	margin-bottom: 8px;
+	display: block;
+}

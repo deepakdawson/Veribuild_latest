@@ -228,7 +228,7 @@ namespace App.Bal.Repositories
             return true;
         }
 
-        public async Task<bool> RemoveCredentails(long id)
+        public async Task<AppResult> RemoveCredentails(long id)
         {
             UserCredential? credential = await _context.UserCredentials.FindAsync(id);
             if (credential is not null)
@@ -237,10 +237,10 @@ namespace App.Bal.Repositories
                 {
                     _context.UserCredentials.Remove(credential);
                     await _context.SaveChangesAsync();
-                    return true;
+                    return new AppResult() { Code = 200, Message = AppMessages.CredentailRemoveMessage };
                 }
             }
-            return false;
+            return new AppResult() { Code = 400, Message = ErrorMessages.InvlaidCredential };
         }
 
         #endregion

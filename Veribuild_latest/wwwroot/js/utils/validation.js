@@ -51,7 +51,7 @@ Validation.prototype.validate = function (elements = []) {
         }
         else if (element.getAttribute('type') == 'number') {
             if (element.value == '') {
-                //this.message = '<p>Please enter all required fields.</p>';
+                this.message = ErrorMessages.Mandatory;
                 element.style.border = '2px solid red';
                 this.validation = true;
             } else if (element.value.length < 9 || element.value.length > 10) {
@@ -63,8 +63,8 @@ Validation.prototype.validate = function (elements = []) {
             }
         }
         else if (element.getAttribute('type') == 'password') {
-            if (!validatePassword(element.value)) {
-                //this.message = '<p>Please enter all required fields.</p>';
+            if (!Validation.password(element.value)) {
+                this.message = ErrorMessages.Mandatory;
                 this.validation = true;
                 element.style.border = '2px solid red';
             } else {
