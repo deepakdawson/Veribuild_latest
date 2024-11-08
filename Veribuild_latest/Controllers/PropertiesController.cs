@@ -26,7 +26,7 @@ namespace Veribuild_latest.Controllers
         {
             _propertyVM.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             _propertyVM.Properties.AddRange(await _propertyService.GetProperties(_propertyVM.UserId, null, address));
-            return View();
+            return View(_propertyVM);
         }
         
 
